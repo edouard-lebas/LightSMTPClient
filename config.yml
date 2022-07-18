@@ -6,4 +6,4 @@ message:
   from: "test <test@example.com>"
   to: "test@example.com"
   subject: "TEST SUBJECT"
-  content: "TEST MESSAGE"
+  body: "TEST MESSAGE"

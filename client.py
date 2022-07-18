@@ -1,5 +1,9 @@
 from tkinter import *
 import yaml
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.utils import formatdate
 
 class LightSMTPClient(Frame):
 
@@ -7,9 +11,25 @@ class LightSMTPClient(Frame):
         Frame.__init__(self, window)
         self.window = window
         self.config = yaml.safe_load(open("config.yml"))
+        self.server = ""
+        self.port = ""
+        self.sender = ""
+        self.recipient = ""
+        self.subject = ""
+        self.message = ""
         self.initUI()
 
     def initUI(self):
+        def retrieve_data():
+            self.server = server_input.get()
+            self.port = port_input.get()
+            self.sender = from_input.get()
+            self.recipient = to_input.get()
+            self.subject = subject_input.get()
+            self.message = body_input.get("1.0",END)
+            print("Sending from server {server} with port {port} from {sender} to {recipient} with subject {subject} with body {message}".format(server=self.server, port=self.port, sender=self.sender, recipient=self.recipient, subject=self.subject, message=self.message))
+            self.send_email()
+
         config_frame = LabelFrame(window, text="Configuration", padx=20, pady=20)
         config_frame.grid(column=0, row=0, padx=20, pady=20)
 
@@ -65,17 +85,33 @@ class LightSMTPClient(Frame):
         message_label = Label(message_frame, text="Message")
         message_label.grid(column=0, row=6)
         body_input = Text(message_frame, height=10, width=30)
-        if self.config["message"]["content"] != None:
-            body_input.insert(1.0,self.config["message"]["content"])
+        if self.config["message"]["body"] != None:
+            body_input.insert(1.0,self.config["message"]["body"])
         body_input.grid(column=1, row=6,padx=5, pady=5)
 
-        send_button=Button(window, text="Send")
+        send_button=Button(window, text="Send", command=retrieve_data)
         send_button.grid(column=0, row=10, padx=20, pady=20)
+
+
+
+    def send_email(self):
+        s = smtplib.SMTP(host=self.server, port=self.port)
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = self.subject
+        msg['From'] = self.sender
+        msg['To'] = self.recipient
+        msg["Date"] = formatdate(localtime=True)
+        part = MIMEText(self.message, 'html')
+        msg.attach(part)
+        try:
+            s.sendmail(from_addr=self.sender, to_addrs=self.recipient, msg=msg.as_string())
+        except Exception as e:
+            print(str(e))
+        s.quit()
 
 if __name__ == "__main__":
     window = Tk()
     LightSMTPClient(window)
     window.title('LightSMTPClient')
     window.geometry('')
-
     window.mainloop()
