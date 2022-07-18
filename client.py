@@ -27,8 +27,11 @@ class LightSMTPClient(Frame):
             self.recipient = to_input.get()
             self.subject = subject_input.get()
             self.message = body_input.get("1.0",END)
-            print("Sending from server {server} with port {port} from {sender} to {recipient} with subject {subject} with body {message}".format(server=self.server, port=self.port, sender=self.sender, recipient=self.recipient, subject=self.subject, message=self.message))
-            self.send_email()
+            print("Trying to send from server {server} with port {port} from {sender} to {recipient} with subject {subject} with body {message}".format(server=self.server, port=self.port, sender=self.sender, recipient=self.recipient, subject=self.subject, message=self.message))
+            if self.server and self.port and self.sender and self.recipient and self.subject and self.message:
+                self.send_email()
+            else:
+                print("ERROR > ALL fields are required")
 
         config_frame = LabelFrame(window, text="Configuration", padx=20, pady=20)
         config_frame.grid(column=0, row=0, padx=20, pady=20)
@@ -105,13 +108,16 @@ class LightSMTPClient(Frame):
         msg.attach(part)
         try:
             s.sendmail(from_addr=self.sender, to_addrs=self.recipient, msg=msg.as_string())
+            print("MAIL SENT")
         except Exception as e:
-            print(str(e))
+            print("ERROR > " +str(e))
         s.quit()
 
 if __name__ == "__main__":
     window = Tk()
     LightSMTPClient(window)
     window.title('LightSMTPClient')
+    window.iconbitmap('icon.ico')
+    window.resizable(False, False)
     window.geometry('')
     window.mainloop()
