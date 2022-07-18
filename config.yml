@@ -1,0 +1,9 @@
+config:
+  server: "127.0.0.1"
+  port: "25"
+
+message:
+  from: "test <test@example.com>"
+  to: "test@example.com"
+  subject: "TEST SUBJECT"
+  content: "TEST MESSAGE"
