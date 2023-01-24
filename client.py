@@ -29,8 +29,13 @@ class LightSMTPClient(Frame):
             self.message = body_input.get("1.0",END)
             print("Trying to send from server {server} with port {port} from {sender} to {recipient} with subject {subject} with body {message}".format(server=self.server, port=self.port, sender=self.sender, recipient=self.recipient, subject=self.subject, message=self.message))
             if self.server and self.port and self.sender and self.recipient and self.subject and self.message:
-                self.send_email()
+                try:
+                    self.send_email()
+                    log_input.insert(1.0,"MAIL SENT")
+                except Exception as e:
+                    log_input.insert(1.0,str(e))
             else:
+                log_input.insert(1.0,"ALL fields are required")
                 print("ERROR > ALL fields are required")
 
         config_frame = LabelFrame(window, text="Configuration", padx=20, pady=20)
@@ -38,6 +43,9 @@ class LightSMTPClient(Frame):
 
         message_frame = LabelFrame(window, text="Message", padx=20, pady=20)
         message_frame.grid(column=0, row=2,padx=20, pady=20)
+
+        log_frame = LabelFrame(window, text="Logs", padx=20, pady=20)
+        log_frame.grid(column=1, row=2,padx=20, pady=20)
 
         #SERVER
         server_label = Label(config_frame, text="Server")
@@ -95,6 +103,10 @@ class LightSMTPClient(Frame):
         send_button=Button(window, text="Send", command=retrieve_data)
         send_button.grid(column=0, row=10, padx=20, pady=20)
 
+        #LOG
+        log_input = Text(log_frame, height=20, width=40)
+        log_input.grid(column=1, row=7,padx=5, pady=5)
+
 
 
     def send_email(self):
@@ -106,11 +118,7 @@ class LightSMTPClient(Frame):
         msg["Date"] = formatdate(localtime=True)
         part = MIMEText(self.message, 'html')
         msg.attach(part)
-        try:
-            s.sendmail(from_addr=self.sender, to_addrs=self.recipient, msg=msg.as_string())
-            print("MAIL SENT")
-        except Exception as e:
-            print("ERROR > " +str(e))
+        s.sendmail(from_addr=self.sender, to_addrs=self.recipient, msg=msg.as_string())
         s.quit()
 
 if __name__ == "__main__":
