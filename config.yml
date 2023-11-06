@@ -1,6 +1,9 @@
 config:
   server: "127.0.0.1"
   port: "25"
+  starttls: "no"
+  username: ""
+  password: ""
 
 message:
   from: "test <test@example.com>"
