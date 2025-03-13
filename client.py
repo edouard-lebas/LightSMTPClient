@@ -31,7 +31,7 @@ class LightSMTPClient(Frame):
                 self.message = body_input.get("1.0", END).strip()
 
                 if not all([self.server, self.port, self.sender, self.recipient, self.subject, self.message]):
-                    log_input.insert(1.0, "[ERROR] All fields are required.\n")
+                    log_input.insert(1.0, "[ERROR] All field are required.\n")
                     return
                 
                 self.send_email()
