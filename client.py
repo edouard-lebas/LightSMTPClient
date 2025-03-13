@@ -57,25 +57,6 @@ class LightSMTPClient(Frame):
 
         log_frame = LabelFrame(window, text="Logs", padx=20, pady=20)
         log_frame.grid(column=1, row=2, padx=20, pady=20)
-
-        def get_domain_info():
-            domain = server_input.get()
-            if not domain:
-                log_input.insert(1.0, "[ERROR] Please enter a server domain first.\n")
-                return
-            try:
-                dkim_records = dns.resolver.resolve(f"default._domainkey.{domain}", 'TXT')
-                dmarc_records = dns.resolver.resolve(f"_dmarc.{domain}", 'TXT')
-    
-                log_input.insert(1.0, f"[INFO] DKIM Records for {domain}:\n")
-                for dkim in dkim_records:
-                    log_input.insert(1.0, f"{dkim.to_text()}\n")
-                
-                log_input.insert(1.0, f"[INFO] DMARC Records for {domain}:\n")
-                for dmarc in dmarc_records:
-                    log_input.insert(1.0, f"{dmarc.to_text()}\n")
-            except Exception as e:
-                log_input.insert(1.0, f"[ERROR] Failed to retrieve DNS records: {str(e)}\n")
         
         config_frame = LabelFrame(window, text="Configuration", padx=20, pady=20)
         config_frame.grid(column=0, row=0, padx=20, pady=20)
@@ -93,7 +74,6 @@ class LightSMTPClient(Frame):
         Label(config_frame, text="Server").grid(column=0, row=1)
         server_input = Entry(config_frame, width=30)
         server_input.grid(column=1, row=1, padx=5, pady=5)
-        Button(config_frame, text="Check Domain Info", command=get_domain_info).grid(column=2, row=1, padx=5, pady=5)
         
         # PORT
         Label(config_frame, text="Port").grid(column=0, row=2)
