@@ -1,8 +1,11 @@
 # LightSMTPClient
-Light python writed SMTP client with simple UI
+Light portable python writed SMTP client with simple UI
 
 # Releases
-
+- 13/03/2025 - V1.3
+  - Attachments
+  - Log optimization
+  - Code documentation
 - 06/11/2023 - V1.2
   - Starttls
   - Authentication
@@ -14,3 +17,6 @@ Light python writed SMTP client with simple UI
 # Default config
 - You can modify config.yml to set default values
 
+# Build
+```shell
+pyinstaller --noconfirm --onefile --windowed --icon "icon.ico" --name "LightSMTPClient V1.3" --add-data "config.yml;."  "client.py"```
